@@ -1,42 +1,15 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      gap: 12px;
-    }
-
-    button {
-      padding: 12px 22px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      background: #3b82f6;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    button.recording {
-      background: #ef4444;
-    }
-
-    #status {
-      font-size: 14px;
-      color: #666;
-    }
+    body { font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; margin:0; gap:12px; }
+    button { padding:12px 22px; font-size:18px; border:none; border-radius:8px; background:#3b82f6; color:#fff; cursor:pointer; }
+    button.recording { background:#ef4444; }
+    #status { font-size:14px; color:#666; }
   </style>
 </head>
-
 <body>
   <button id="recBtn">🎤 Start</button>
   <div id="status"></div>
@@ -56,17 +29,16 @@
       chunks = [];
       recorder = new MediaRecorder(stream);
       recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
-      recorder.onstop = () => {
-        recorder.onstop = () => {
-          stream.getTracks().forEach(t => t.stop());
-          const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
-          if (window.opener) {
-            window.opener.postMessage({ type: 'audio-ready', blob }, location.origin);
-            window.close();
-          } else {
-            statusEl.textContent = 'Lost connection to the chat page.';
-          }
-        };
+      recorder.onstop = () => {recorder.onstop = () => {
+  stream.getTracks().forEach(t => t.stop());
+  const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+  if (window.opener) {
+    window.opener.postMessage({ type: 'audio-ready', blob }, location.origin);
+    window.close();
+  } else {
+    statusEl.textContent = 'Lost connection to the chat page.';
+  }
+};
         stream.getTracks().forEach(t => t.stop());
         const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
         const reader = new FileReader();
@@ -89,5 +61,4 @@
     });
   </script>
 </body>
-
 </html>
